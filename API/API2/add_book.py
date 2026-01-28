@@ -26,12 +26,12 @@ def add_book(book_id: int):
     )
 
     print("Status:", r.status_code)
-    # Toon response body (handig bij 409/401)
+   
     try:
         print(r.json())
     except Exception:
         print(r.text)
 
 if __name__ == "__main__":
-    add_book(101)   # pas id aan als 101 al bestaat
+    add_book(101) 
 

@@ -1,10 +1,8 @@
 import requests
 
-# Open-Meteo API (gratis, geen key)
 BASE_URL = "https://api.open-meteo.com/v1/forecast"
 
 def main():
-    # Coördinaten van Brussel
     params = {
         "latitude": 50.85,
         "longitude": 4.35,
