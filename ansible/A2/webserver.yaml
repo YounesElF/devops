@@ -1,0 +1,34 @@
+---
+- name: A2 - Webserver deployment (Apache2)
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install apache2
+      apt:
+        name: apache2
+        state: present
+
+    - name: Ensure apache is running
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Create custom index.html
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <head>
+            <title>Ansible A2</title>
+          </head>
+          <body>
+            <h1>Hello from Ansible</h1>
+            <p>DEVASC / A2 lab werkt! GG Younes</p>
+          </body>
+          </html>

@@ -1,0 +1,37 @@
+---
+- name: Oefening - Simpele Nginx webserver
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start en enable nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Plaats simpele index.html
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+            <head>
+              <title>Ansible Nginx</title>
+            </head>
+            <body>
+              <h1>Nginx werkt!</h1>
+              <p>Deze pagina is gedeployed met Ansible. GG Younes</p>
+            </body>
+          </html>
+        owner: www-data
+        group: www-data
+        mode: "0644"

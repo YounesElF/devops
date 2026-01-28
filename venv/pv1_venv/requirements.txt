@@ -1,0 +1,13 @@
+branca==0.8.2
+certifi==2026.1.4
+charset-normalizer==3.4.4
+folium==0.18.0
+geographiclib==2.1
+geopy==2.4.1
+idna==3.11
+jinja2==3.1.6
+MarkupSafe==2.1.5
+numpy==1.24.4
+requests==2.32.4
+urllib3==2.2.3
+xyzservices==2025.11.0

@@ -1,0 +1,6 @@
+ACCESS_TOKEN = "NGJhOTE4MzktN2FlMy00OGE1LWJjN2ItZTc3ODE2ZWQyOTQwZTgyMzU2M2EtZDg5_P0A1_71b6b34c-abff-4407-ac50-5e62323aed80"
+
+HEADERS = {
+    "Authorization": f"Bearer NGJhOTE4MzktN2FlMy00OGE1LWJjN2ItZTc3ODE2ZWQyOTQwZTgyMzU2M2EtZDg5_P0A1_71b6b34c-abff-4407-ac50-5e62323aed80",
+    "Content-Type": "application/json"
+}

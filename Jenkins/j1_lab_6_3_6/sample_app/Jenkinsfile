@@ -1,0 +1,71 @@
+pipeline {
+  agent any
+
+  environment {
+    IMAGE_NAME = "sample_deployment_image"
+    CONTAINER_NAME = "sample_deployment_container"
+    PORT = "5555"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        // Als je dit project in git zet: Jenkins checkout automatisch.
+        // Voor lokaal/workspace is dit ok als bestanden al in repo staan.
+        sh 'ls -la'
+      }
+    }
+
+    stage('Build Image') {
+      steps {
+        sh 'docker build -t $IMAGE_NAME .'
+      }
+    }
+
+    stage('Run Container') {
+      steps {
+        sh '''
+          docker container rm -f $CONTAINER_NAME >/dev/null 2>&1 || true
+          docker run -d --rm -p ${PORT}:${PORT} --name $CONTAINER_NAME $IMAGE_NAME
+          sleep 2
+        '''
+      }
+    }
+
+    stage('Test') {
+      steps {
+        sh '''
+          curl -sS http://127.0.0.1:${PORT}/health
+          echo
+          curl -sS http://127.0.0.1:${PORT}/ | head -n 5
+          echo
+        '''
+      }
+    }
+
+    stage('Collect Info') {
+      steps {
+        sh '''
+          echo "=== IMAGE ===" > sample_deploy_log.txt
+          date >> sample_deploy_log.txt
+          echo >> sample_deploy_log.txt
+
+          docker image ls | grep "$IMAGE_NAME" >> sample_deploy_log.txt || true
+          docker ps | grep "$CONTAINER_NAME" >> sample_deploy_log.txt || true
+          echo >> sample_deploy_log.txt
+          docker inspect "$CONTAINER_NAME" | head -n 60 >> sample_deploy_log.txt
+        '''
+        archiveArtifacts artifacts: 'sample_deploy_log.txt', fingerprint: true
+      }
+    }
+  }
+
+  post {
+    always {
+      sh '''
+        docker container stop $CONTAINER_NAME >/dev/null 2>&1 || true
+        docker image rm $IMAGE_NAME >/dev/null 2>&1 || true
+      '''
+    }
+  }
+}

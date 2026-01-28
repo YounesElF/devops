@@ -1,0 +1,63 @@
+pipeline {
+  agent any
+
+  environment {
+    APP_DIR        = "/home/devasc/devnet/jx1_nogit"
+    IMAGE          = "jx1-nogit:1.0"
+    CONTAINER_NAME = "jx1-nogit-container"
+    HOST_PORT      = "506"
+    CONTAINER_PORT = "5050"
+  }
+
+  stages {
+    stage('Prepare') {
+      steps {
+        sh '''
+          set -e
+          echo "Running on: $(hostname)"
+          echo "Checking project folder..."
+          ls -la "$APP_DIR"
+          docker --version
+        '''
+      }
+    }
+
+    stage('Build Image') {
+      steps {
+        sh '''
+          set -e
+          cd "$APP_DIR"
+          docker build -t "$IMAGE" .
+        '''
+      }
+    }
+
+    stage('Run Container') {
+      steps {
+        sh '''
+          set -e
+          docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
+          docker run -d --rm \
+            -p ${HOST_PORT}:${CONTAINER_PORT} \
+            --name "$CONTAINER_NAME" \
+            "$IMAGE"
+          sleep 2
+        '''
+      }
+    }
+
+    stage('Test') {
+      steps {
+        sh '''
+          set -e
+          curl -sS http://127.0.0.1:${HOST_PORT}/health
+          echo
+          curl -sS http://127.0.0.1:${HOST_PORT}/
+        '''
+      }
+    }
+  }
+
+  post {
+    always {
+

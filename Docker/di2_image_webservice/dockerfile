@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# dependencies
+COPY app/requirements.txt .
+RUN pip install --no-cache-dir --progress-bar off -r requirements.txt
+
+
+# app code
+COPY app/app.py .
+
+ENV APP_VERSION="1.0"
+EXPOSE 5050
+
+CMD ["python", "app.py"]
